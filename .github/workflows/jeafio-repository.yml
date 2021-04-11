@@ -1,0 +1,27 @@
+name: jeafio/repository
+
+on:
+  push:
+    branches: [ master ]
+    paths: 'packages/jeafio-repository/**'
+  pull_request:
+    branches: [ master ]
+    paths: 'packages/jeafio-repository/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install --frozen-lockfile
+    - run: yarn run lint
+      working-directory: ./packages/jeafio-repository
+    - run: yarn run test
+      working-directory: ./packages/jeafio-repository

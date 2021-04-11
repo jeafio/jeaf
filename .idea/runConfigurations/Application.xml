@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Application" type="NodeJSConfigurationType" node-parameters="--require ts-node/register" path-to-js-file="VariantService.ts" working-dir="$PROJECT_DIR$/packages/jeafio-jeaf/dev">
+    <method v="2" />
+  </configuration>
+</component>
