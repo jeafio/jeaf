@@ -7,5 +7,6 @@ export * from './src/HTTPRequestHandler';
 export * from './src/HTTPSession';
 export * from './src/HTTPRouter';
 export * from './src/HTTPCookie';
+export * from './src/HTTPServer';
 export * from './src/HTTPResponseInterceptor';
 export * from './src/HTTPRequestInterceptor';
