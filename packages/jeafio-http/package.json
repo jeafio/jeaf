@@ -18,6 +18,7 @@
   "module": "esm/index.js",
   "scripts": {
     "test": "jest --passWithNoTests --coverage",
+    "test:watch": "jest --passWithNoTests --watch",
     "lint": "eslint src",
     "build:esm": "tsc -p ./tsconfig.esm.json",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
@@ -40,7 +41,6 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "path-to-regexp": "^6.2.0",
     "reflect-metadata": "^0.1.13"
   },
   "files": [
