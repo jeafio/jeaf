@@ -9,7 +9,7 @@ export interface HttpCookieConfig {
   expires?: Date;
 }
 
-export class HttpCookie {
+export class HTTPCookie {
   private readonly name: string;
   private readonly value: string;
   private readonly config: HttpCookieConfig;
@@ -18,6 +18,14 @@ export class HttpCookie {
     this.name = name;
     this.value = value;
     this.config = config;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getValue(): string {
+    return this.value;
   }
 
   private mapConfigOption(option: keyof HttpCookieConfig): string {

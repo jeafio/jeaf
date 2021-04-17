@@ -9,7 +9,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/');
     const request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
     const response = await router.execute(request, {});
-    expect(response.code).toBe(404);
+    expect(response.getStatusCode()).toBe(404);
   });
 
   it('should execute interceptor without returning response', async () => {
@@ -19,7 +19,7 @@ describe('HTTPRouter', () => {
     const request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
     const session = {};
     const response = await router.execute(request, session);
-    expect(response.code).toBe(404);
+    expect(response.getStatusCode()).toBe(404);
     expect(interceptor).toHaveBeenCalledWith(request, session);
   });
 
@@ -32,7 +32,7 @@ describe('HTTPRouter', () => {
     const request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
     const session = {};
     const response = await router.execute(request, session);
-    expect(response.code).toBe(404);
+    expect(response.getStatusCode()).toBe(404);
     expect(interceptorOne).toHaveBeenCalledWith(request, session);
     expect(interceptorTwo).toHaveBeenCalledWith(request, session);
   });
@@ -46,7 +46,7 @@ it('should return response from interceptor', async () => {
   const request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
   const session = {};
   const response = await router.execute(request, session);
-  expect(response.code).toBe(200);
+  expect(response.getStatusCode()).toBe(200);
   expect(interceptor).toHaveBeenCalledWith(request, session);
 });
 
@@ -57,7 +57,7 @@ it('should execute request handler', async () => {
   const request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
   const session = {};
   const response = await router.execute(request, session);
-  expect(response.code).toBe(200);
+  expect(response.getStatusCode()).toBe(200);
   expect(handler).toHaveBeenCalledWith(request, session);
 });
 
@@ -68,7 +68,7 @@ it('should execute request handler when router has a prefixed path', async () =>
   const request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
   const session = {};
   const response = await router.execute(request, session);
-  expect(response.code).toBe(200);
+  expect(response.getStatusCode()).toBe(200);
   expect(handler).toHaveBeenCalledWith(request, session);
 });
 
@@ -92,7 +92,7 @@ it('should ignore invalid handles', async () => {
   const request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
   const session = {};
   const response = await router.execute(request, session);
-  expect(response.code).toBe(404);
+  expect(response.getStatusCode()).toBe(404);
   expect(handler).not.toHaveBeenCalledWith(request, session);
 });
 

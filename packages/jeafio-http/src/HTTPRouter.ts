@@ -121,7 +121,7 @@ export class HTTPRouter {
     }
 
     if (!finalResponse) {
-      finalResponse = new HTTPResponse().setCode(404);
+      finalResponse = new HTTPResponse(404);
     }
 
     return await this.executeResponseInterceptors(req, finalResponse, session);
