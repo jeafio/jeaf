@@ -19,9 +19,14 @@ describe('HTTPRequest', () => {
         'host': 'localhost:8080',
         'postman-token': '2f435d9e-d1c8-47c8-a1de-45b05bb5b81e',
         'user-agent': 'PostmanRuntime/7.26.10',
+        'cookie': 'a=b;c=d'
       },
       'method': 'GET',
       'path': '/a/b/c',
+      'cookies': {
+        'a': 'b',
+        'c': 'd',
+      },
       'queries': {
         'a': '1',
         'b': '2',
@@ -66,6 +71,7 @@ describe('HTTPRequest', () => {
       'host': 'localhost:8080',
       'postman-token': '2f435d9e-d1c8-47c8-a1de-45b05bb5b81e',
       'user-agent': 'PostmanRuntime/7.26.10',
+      'cookie': 'a=b;c=d'
     });
   });
 
@@ -79,5 +85,24 @@ describe('HTTPRequest', () => {
 
   it('should return original request', () => {
     expect(request.getRequest()).toBe(IncomingMessageFixture);
+  });
+
+  it('should return true if cookie exists', () => {
+    expect(request.hasCookie('a')).toBe(true);
+  });
+
+  it('should return false if cookie does not exist', () => {
+    expect(request.hasCookie('x')).toBe(false);
+  });
+
+  it('should return cookie value', () => {
+    expect(request.getCookie('a')).toBe('b');
+  });
+
+  it('should return all cookies', () => {
+    expect(request.getCookies()).toEqual({
+      a: 'b',
+      c: 'd'
+    });
   });
 });

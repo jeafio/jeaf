@@ -1,6 +1,7 @@
 import { HTTPRequestMethod } from './HTTPRequestMethod';
 import { IncomingMessage, IncomingHttpHeaders } from 'http';
 import { parsePath } from './functions/parsePath';
+import { parseCookies } from './functions/parseCookies';
 
 /**
  * The HTTPRequest wraps the native IncomingMessage object and
@@ -39,6 +40,12 @@ export class HTTPRequest {
   private readonly request: IncomingMessage;
 
   /**
+   * An object containing all cookies.
+   * @private
+   */
+  private readonly cookies: Record<string, string>;
+
+  /**
    * @constructor
    * @param req
    */
@@ -49,6 +56,19 @@ export class HTTPRequest {
     this.path = path;
     this.queries = queries;
     this.headers = req.headers;
+    this.cookies = parseCookies(req.headers.cookie || '');
+  }
+
+  public hasCookie(name: string): boolean {
+    return Object.prototype.hasOwnProperty.call(this.cookies, name);
+  }
+
+  public getCookie(name: string): string {
+    return this.cookies[name];
+  }
+
+  public getCookies(): Record<string, string> {
+    return { ...this.cookies };
   }
 
   /**

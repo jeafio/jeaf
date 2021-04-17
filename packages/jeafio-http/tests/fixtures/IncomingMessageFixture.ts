@@ -9,6 +9,7 @@ export const IncomingMessageFixture: Partial<IncomingMessage> = {
     "postman-token": "2f435d9e-d1c8-47c8-a1de-45b05bb5b81e",
     "host": "localhost:8080",
     "accept-encoding": "gzip, deflate, br",
-    "connection": "keep-alive"
+    "connection": "keep-alive",
+    "cookie": "a=b;c=d"
   }
 };
