@@ -2,7 +2,7 @@ import { HTTPRequestMethod } from './HTTPRequestMethod';
 import { IncomingMessage, IncomingHttpHeaders } from 'http';
 import { parsePath } from './functions/parsePath';
 import { parseCookies } from './functions/parseCookies';
-
+import {Readable} from 'stream';
 /**
  * The HTTPRequest wraps the native IncomingMessage object and
  * provides utility functions.
@@ -57,6 +57,23 @@ export class HTTPRequest {
     this.queries = queries;
     this.headers = req.headers;
     this.cookies = parseCookies(req.headers.cookie || '');
+  }
+
+  public async getText(): Promise<string> {
+    return new Promise((resolve) => {
+      let data = '';
+      this.request.on('data', (chunk) => {
+        data += chunk;
+      }).on('end', () => resolve(data));
+    });
+  }
+
+  public async getJSON(): Promise<object> {
+    return JSON.parse(await this.getText());
+  }
+
+  public getRaw(listener: (chunk: unknown) => void): Readable {
+    return this.request.on('data', listener);
   }
 
   public hasCookie(name: string): boolean {

@@ -1,14 +1,35 @@
 import { HTTPCookie } from './HTTPCookie';
 import { IncomingHttpHeaders } from 'http';
+import { Readable } from 'stream';
 
 export class HTTPResponse {
   private statusCode: number;
   private headers: Record<string, string> = {};
   private queries: Record<string, string> = {};
   private cookies: HTTPCookie[] = [];
+  private body: Readable | undefined;
 
   constructor(statusCode = 200) {
     this.statusCode = statusCode;
+  }
+
+  public getBody(): Readable | undefined {
+    return this.body;
+  }
+
+  public setBody(body: Readable): this {
+    this.body = body;
+    return this;
+  }
+
+  public setText(text: string): this {
+    this.body = Readable.from(text);
+    return this;
+  }
+
+  public setJson(object: object): this {
+    this.setText(JSON.stringify(object));
+    return this;
   }
 
   public setStatusCode(statusCode: number): this {
@@ -18,6 +39,10 @@ export class HTTPResponse {
 
   public getStatusCode(): number {
     return this.statusCode;
+  }
+
+  public getCookies(): HTTPCookie[] {
+    return [...this.cookies];
   }
 
   public hasCookie(name: string): boolean {

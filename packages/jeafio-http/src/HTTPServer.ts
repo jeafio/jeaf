@@ -1,4 +1,4 @@
-import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
+import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import { HTTPRouter } from './HTTPRouter';
 import { HTTPRequest } from './HTTPRequest';
 
@@ -6,9 +6,9 @@ export class HTTPServer {
   private server: Server;
   private router: HTTPRouter;
 
-  constructor() {
+  constructor(router: HTTPRouter) {
     this.server = createServer(this.handleRequests.bind(this));
-    this.router = new HTTPRouter('/');
+    this.router = router;
   }
 
   private async handleRequests(req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -18,10 +18,20 @@ export class HTTPServer {
     const response = await this.router.execute(request, session);
     const statusCode = response.getStatusCode();
     const headers = response.getHeaders();
+    const cookies = response.getCookies();
+
+    if (cookies.length > 0) {
+      headers['Set-Cookie'] = cookies.map((cookie) => cookie.toString());
+    }
 
     res.writeHead(statusCode, headers);
 
-    res.end();
+    const body = response.getBody();
+    if (body) {
+      body.pipe(res);
+    } else {
+      res.end();
+    }
   }
 
   public listen(port: number, host?: string): void {
