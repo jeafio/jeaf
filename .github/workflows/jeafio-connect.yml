@@ -1,4 +1,4 @@
-name: jeafio/connect
+name: jeafio-connect
 
 on:
   push:
@@ -25,3 +25,9 @@ jobs:
       working-directory: ./packages/jeafio-connect
     - run: yarn run test
       working-directory: ./packages/jeafio-connects
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./packages/jeafio-connect/coverage
+        flags: jeafio-connect

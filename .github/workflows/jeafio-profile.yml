@@ -1,4 +1,4 @@
-name: jeafio/profile
+name: jeafio-profile
 
 on:
   push:
@@ -25,3 +25,9 @@ jobs:
       working-directory: ./packages/jeafio-profile
     - run: yarn run test
       working-directory: ./packages/jeafio-profile
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./packages/jeafio-profile/coverage
+        flags: jeafio-profile

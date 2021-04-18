@@ -1,4 +1,4 @@
-name: jeafio/http
+name: jeafio-http
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: jeafio/cache
+name: jeafio-cache
 
 on:
   push:
@@ -25,3 +25,9 @@ jobs:
       working-directory: ./packages/jeafio-cache
     - run: yarn run test
       working-directory: ./packages/jeafio-cache
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./packages/jeafio-cache/coverage
+        flags: jeafio-cache

@@ -1,4 +1,4 @@
-name: jeafio/transformer
+name: jeafio-transformer
 
 on:
   push:
@@ -25,3 +25,9 @@ jobs:
       working-directory: ./packages/jeafio-transformer
     - run: yarn run test
       working-directory: ./packages/jeafio-transformer
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./packages/jeafio-transformer/coverage
+        flags: jeafio-transformer

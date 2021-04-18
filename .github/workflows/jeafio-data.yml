@@ -1,4 +1,4 @@
-name: jeafio/data
+name: jeafio-data
 
 on:
   push:
@@ -25,3 +25,9 @@ jobs:
       working-directory: ./packages/jeafio-data
     - run: yarn run test
       working-directory: ./packages/jeafio-data
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./packages/jeafio-data/coverage
+        flags: jeafio-data

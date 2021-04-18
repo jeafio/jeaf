@@ -1,4 +1,4 @@
-name: jeafio/cli
+name: jeafio-cli
 
 on:
   push:
@@ -25,3 +25,9 @@ jobs:
       working-directory: ./packages/jeafio-cli
     - run: yarn run test
       working-directory: ./packages/jeafio-cli
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./packages/jeafio-ci/coverage
+        flags: jeafio-ci
