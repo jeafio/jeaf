@@ -4,10 +4,10 @@ import { HTTPResponse } from './src/HTTPResponse';
 import { HTTPCookie } from './src/HTTPCookie';
 
 const router = new HTTPRouter('/');
-router.addRequestHandler('POST', '/test', async (req) => {
 
+router.post('/', async (req) => {
   return new HTTPResponse(200)
-    .setJson({ success: true })
+    .setJson({ success: true, request: await req.getJSON() })
     .addCookie(new HTTPCookie('jwt', '1234'))
     .addCookie(new HTTPCookie('jwt2', '1234'));
 });

@@ -13,6 +13,16 @@ describe('HTTPCookie', () => {
     }).toString()).toBe('a=1234; path=/a/b;Max-Age=1000;HttpOnly');
   });
 
+  it('should return cookie name', () => {
+    const cookie = new HTTPCookie('a', '1234');
+    expect(cookie.getName()).toBe('a');
+  });
+
+  it('should return cookie value', () => {
+    const cookie = new HTTPCookie('a', '1234');
+    expect(cookie.getValue()).toBe('1234');
+  });
+
   it('should add httpOnly flag', () => {
     expect(new HTTPCookie('a', '1234', { httpOnly: true }).toString()).toBe('a=1234; HttpOnly');
   });

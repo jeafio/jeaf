@@ -2,6 +2,13 @@ import { parsePath } from './parsePath';
 
 describe('parsePath', () => {
 
+  it('should normalize root path', () => {
+    expect(parsePath('/')).toEqual({
+      path: '/',
+      queries: {}
+    })
+  });
+
   it('should remove ending slashes', () => {
     expect(parsePath('/a/b/')).toEqual({
       path: '/a/b',

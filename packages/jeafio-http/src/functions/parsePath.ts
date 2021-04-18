@@ -12,6 +12,11 @@ export function parsePath(url: string): ParsedUrl {
   const splitPath = url.split('?');
   const parserResult: Partial<ParsedUrl> = { queries: {} };
   parserResult.path = splitPath[0].endsWith('/') ? splitPath[0].slice(0, -1) : splitPath[0];
+
+  if (parserResult.path === '') {
+    parserResult.path = '/';
+  }
+
   if (splitPath[1]) {
     parserResult.queries = splitPath[1].split('&').reduce((queries, query) => {
       const splitQuery = query.split('=');

@@ -9,7 +9,7 @@ import assert from 'assert';
  */
 export function matchPatch(pattern: string, path: string): Record<string, string> | null {
   assert(path === '/' || !path.endsWith('/'), 'Path can not end with a slash');
-  assert(path === '/' || !pattern.endsWith('/'), 'Pattern can not end with a slash');
+  assert(pattern === '/' || !pattern.endsWith('/'), 'Pattern can not end with a slash');
   if (pattern === '*') return {};
   if (pattern === path) return {};
   if (pattern.includes('*') || pattern.includes('{')) {

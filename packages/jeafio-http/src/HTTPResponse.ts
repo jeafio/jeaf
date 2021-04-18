@@ -28,6 +28,7 @@ export class HTTPResponse {
   }
 
   public setJson(object: object): this {
+    this.setHeader('Content-Type', 'application/json');
     this.setText(JSON.stringify(object));
     return this;
   }
