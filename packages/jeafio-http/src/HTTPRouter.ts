@@ -135,18 +135,15 @@ export class HTTPRouter {
         const prefixedPath = this.getPath();
         if (req.getMethod() === requestHandler.method && matchPatch(prefixedPath + requestHandler.path, req.getPath())) {
           if (requestHandler.options?.requestInterceptors) {
-            const response = this.executeRequestInterceptors(requestHandler.options?.requestInterceptors, req, session);
+            const response = await this.executeRequestInterceptors(requestHandler.options.requestInterceptors, req, session);
             if (response) {
               return response;
             }
           }
-          let response = await requestHandler.handler(req, session);
+          const response = await requestHandler.handler(req, session);
 
-          if (!response) {
-            response = new HTTPResponse(404);
-          }
           if (requestHandler.options?.responseInterceptors) {
-            return this.executeResponseInterceptors(requestHandler.options.responseInterceptors, req, response, session);
+            return await this.executeResponseInterceptors(requestHandler.options.responseInterceptors, req, response, session);
           }
           return response;
         }

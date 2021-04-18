@@ -1,13 +1,16 @@
 import { HTTPRequest } from './HTTPRequest';
 import { IncomingMessageFixture } from '../tests/fixtures/IncomingMessageFixture';
 import { IncomingMessage } from 'http';
+import { Readable } from 'stream';
 
 describe('HTTPRequest', () => {
 
   let request: HTTPRequest;
+  let message: IncomingMessage;
 
   beforeEach(() => {
-    request = new HTTPRequest(IncomingMessageFixture as IncomingMessage);
+    message = IncomingMessageFixture();
+    request = new HTTPRequest(message);
   });
 
   it('should convert an IncomingMessage to a HTTPRequest', () => {
@@ -19,7 +22,7 @@ describe('HTTPRequest', () => {
         'host': 'localhost:8080',
         'postman-token': '2f435d9e-d1c8-47c8-a1de-45b05bb5b81e',
         'user-agent': 'PostmanRuntime/7.26.10',
-        'cookie': 'a=b;c=d'
+        'cookie': 'a=b;c=d',
       },
       'method': 'GET',
       'path': '/a/b/c',
@@ -31,7 +34,7 @@ describe('HTTPRequest', () => {
         'a': '1',
         'b': '2',
       },
-      'request': IncomingMessageFixture,
+      'request': message,
     });
   });
 
@@ -71,7 +74,7 @@ describe('HTTPRequest', () => {
       'host': 'localhost:8080',
       'postman-token': '2f435d9e-d1c8-47c8-a1de-45b05bb5b81e',
       'user-agent': 'PostmanRuntime/7.26.10',
-      'cookie': 'a=b;c=d'
+      'cookie': 'a=b;c=d',
     });
   });
 
@@ -80,11 +83,11 @@ describe('HTTPRequest', () => {
   });
 
   it('should return path', () => {
-    expect(request.getPath()).toEqual('/a/b/c')
+    expect(request.getPath()).toEqual('/a/b/c');
   });
 
   it('should return original request', () => {
-    expect(request.getRequest()).toBe(IncomingMessageFixture);
+    expect(request.getRequest()).toBe(message);
   });
 
   it('should return true if cookie exists', () => {
@@ -102,7 +105,23 @@ describe('HTTPRequest', () => {
   it('should return all cookies', () => {
     expect(request.getCookies()).toEqual({
       a: 'b',
-      c: 'd'
+      c: 'd',
+    });
+  });
+
+  it('should return body as text', async () => {
+    expect(await request.getText()).toEqual('{"name": "test"}');
+  });
+
+  it('should return body as json', async () => {
+    expect(await request.getJSON()).toEqual( {"name": "test"});
+  });
+
+  it('should return raw body', (done) => {
+    const listener = jest.fn();
+    request.getRaw(listener).on('end', () => {
+      expect(listener).toHaveBeenCalledWith(Buffer.from('{"name": "test"}'));
+      done();
     });
   });
 });

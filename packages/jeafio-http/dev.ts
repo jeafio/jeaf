@@ -15,3 +15,10 @@ router.post('/', async (req) => {
 
 const server = new HTTPServer(router);
 server.listen(8080);
+
+
+
+// Bare       => 1319114
+// Fastify    => 1187312   1082890
+// HTTPServer =>  906079    569240
+// Express    =>  315681    304745

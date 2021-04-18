@@ -34,6 +34,10 @@ export class HTTPServer {
     }
   }
 
+  public getServer(): Server {
+    return this.server;
+  }
+
   public listen(port: number, host?: string): void {
     this.server.listen(port, host);
   }

@@ -56,7 +56,7 @@ export class HTTPRequest {
     this.path = path;
     this.queries = queries;
     this.headers = req.headers;
-    this.cookies = parseCookies(req.headers.cookie || '');
+    this.cookies = parseCookies(req.headers.cookie);
   }
 
   public async getText(): Promise<string> {
