@@ -1,0 +1,49 @@
+flags:
+  jeafio-jeaf:
+    carryforward: true
+    paths:
+      - packages/jeafio-jeaf/
+  jeafio-cache:
+    carryforward: true
+    paths:
+      - packages/jeafio-cache/
+  jeafio-cli:
+    carryforward: true
+    paths:
+      - packages/jeafio-cli/
+  jeafio-connect:
+    carryforward: true
+    paths:
+      - packages/jeafio-connect/
+  jeafio-data:
+    carryforward: true
+    paths:
+      - packages/jeafio-data/
+  jeafio-dicontainer:
+    carryforward: true
+    paths:
+      - packages/jeafio-dicontainer/
+  jeafio-http:
+    carryforward: true
+    paths:
+      - packages/jeafio-http/
+  jeafio-logger:
+    carryforward: true
+    paths:
+      - packages/jeafio-logger/
+  jeafio-profile:
+    carryforward: true
+    paths:
+      - packages/jeafio-profile/
+  jeafio-repository:
+    carryforward: true
+    paths:
+      - packages/jeafio-repository/
+  jeafio-transformer:
+    carryforward: true
+    paths:
+      - packages/jeafio-transformer/
+  jeafio-validate:
+    carryforward: true
+    paths:
+      - packages/jeafio-validate/
