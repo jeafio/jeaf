@@ -2,8 +2,7 @@ import { HTTPRouter } from './HTTPRouter';
 import { HTTPRequest } from './HTTPRequest';
 import { IncomingMessageFixture } from '../tests/fixtures/IncomingMessageFixture';
 import { HTTPResponse } from './HTTPResponse';
-import { HTTPRequestMethod } from '../types';
-import { mocked } from 'ts-jest';
+import { HTTPRequestMethod } from './HTTPRequestMethod';
 
 describe('HTTPRouter', () => {
   it('should return an empty 404 response by default', async () => {
