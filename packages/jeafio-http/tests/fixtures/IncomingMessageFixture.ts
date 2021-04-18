@@ -1,6 +1,6 @@
 import { MockedMessage } from '../util/MockedMessage';
 import { IncomingMessage } from 'http';
-import { HTTPRequestMethod } from '../../types';
+import { HTTPRequestMethod } from '../../src/HTTPRequestMethod';
 
 export const IncomingMessageFixture: (method?: HTTPRequestMethod) => IncomingMessage = (method: HTTPRequestMethod = 'GET') => {
   const message = new MockedMessage();

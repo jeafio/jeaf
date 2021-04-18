@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import { HTTPRequestMethod } from '../../types';
+import { HTTPRequestMethod } from '../../src/HTTPRequestMethod';
 
 export class MockedMessage extends Readable {
   public declare body: Buffer;
