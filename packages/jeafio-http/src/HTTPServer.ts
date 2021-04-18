@@ -3,8 +3,8 @@ import { HTTPRouter } from './HTTPRouter';
 import { HTTPRequest } from './HTTPRequest';
 
 export class HTTPServer {
-  private server: Server;
-  private router: HTTPRouter;
+  private readonly server: Server;
+  private readonly router: HTTPRouter;
 
   constructor(router: HTTPRouter) {
     this.server = createServer(this.handleRequests.bind(this));

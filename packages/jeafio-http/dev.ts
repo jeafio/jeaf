@@ -20,5 +20,9 @@ server.listen(8080);
 
 // Bare       => 1319114
 // Fastify    => 1187312   1082890
-// HTTPServer =>  906079    569240
+// HTTPServer =>  906079    561600
 // Express    =>  315681    304745
+
+// TODO: https://en.wikipedia.org/wiki/Radix_tree
+// TODO: https://www.npmjs.com/package/secure-json-parse
+// TODO: https://www.npmjs.com/package/fast-json-stringify
