@@ -1,2 +1,2 @@
+export * from './src/LRUCache';
 export * from './src/Cache';
-export * from './src/Memoize';

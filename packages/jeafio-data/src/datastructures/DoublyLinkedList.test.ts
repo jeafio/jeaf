@@ -15,6 +15,17 @@ describe('DoublyLinkedList', function() {
     expect(list.getLast()).toBeUndefined();
   });
 
+  it('should add a value to the head', function() {
+    list.addFirst('Test');
+    expect(list.getFirst()).toBe('Test');
+  });
+
+  it('should add a value to the head of an existing list', function() {
+    list.addFirst('Test');
+    list.addFirst('Test2');
+    expect(list.getFirst()).toBe('Test2');
+  });
+
   it('head and tail should be the same if one element is present', function() {
     list.add('Test');
     expect(list.getFirst()).toBe('Test');

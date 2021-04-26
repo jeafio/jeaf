@@ -24,7 +24,7 @@ export class DoublyLinkedList<T> {
    * Adds a new node to the list
    * @param data
    */
-  public add(data: T): void {
+  public add(data: T): DLLNode<T> {
     const newNode = new DLLNode(data);
     if (this.tail) {
       this.tail.next = newNode;
@@ -35,9 +35,10 @@ export class DoublyLinkedList<T> {
       this.head = newNode;
       this.tail = newNode;
     }
+    return newNode;
   }
 
-  public addAt(index: number, data: T): void {
+  public addAt(index: number, data: T): DLLNode<T> {
     const newNode = new DLLNode(data);
     const node = this.getNode(index);
     assert(node, 'Index out of bound');
@@ -52,6 +53,21 @@ export class DoublyLinkedList<T> {
       newNode.next = node;
       node.previous = newNode;
     }
+
+    return newNode;
+  }
+
+  public addFirst(data: T): DLLNode<T> {
+    const newNode = new DLLNode(data);
+    if (this.head) {
+      this.head.previous = newNode;
+      newNode.next = this.head;
+      this.head = newNode;
+    } else {
+      this.head = newNode;
+      this.tail = newNode;
+    }
+    return newNode;
   }
 
   public get(index: number): T | undefined {
@@ -92,6 +108,10 @@ export class DoublyLinkedList<T> {
   public remove(index: number): void {
     const node = this.getNode(index);
     assert(node, 'Index out of bound');
+    this.removeNode(node);
+  }
+
+  public removeNode(node: DLLNode<T>): void {
     if (this.head === node) {
       this.head = node.next;
     }
