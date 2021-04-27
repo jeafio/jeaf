@@ -1,79 +1,55 @@
 import { HTTPRequestMethod } from './HTTPRequestMethod';
-import { IncomingMessage, IncomingHttpHeaders } from 'http';
-import { parsePath } from './functions/parsePath';
-import { parseCookies } from './functions/parseCookies';
-import {Readable} from 'stream';
+import { HTTPMessage } from './HTTPMessage';
+
 /**
  * The HTTPRequest wraps the native IncomingMessage object and
  * provides utility functions.
  */
-export class HTTPRequest {
+export class HTTPRequest extends HTTPMessage {
 
   /**
    * The incoming request method.
    * @private
    */
-  private readonly method: HTTPRequestMethod;
+  protected method: HTTPRequestMethod;
 
   /**
    * The path part of the request url.
    * @private
    */
-  private readonly path: string;
-
-  /**
-   * An object containing all request headers.
-   * @private
-   */
-  private readonly headers: IncomingHttpHeaders;
+  protected path: string;
 
   /**
    * An object containing all url queries.
    * @private
    */
-  private readonly queries: Record<string, string>;
-
-  /**
-   * The original IncomingMessage
-   * @private
-   */
-  private readonly request: IncomingMessage;
+  protected queries: Record<string, string> = {};
 
   /**
    * An object containing all cookies.
    * @private
    */
-  private readonly cookies: Record<string, string>;
+  protected cookies: Record<string, string> = {};
 
   /**
    * @constructor
-   * @param req
+   * @param method
+   * @param path
    */
-  constructor(req: IncomingMessage) {
-    const { path, queries } = parsePath(req.url as string);
-    this.request = req;
-    this.method = req.method as HTTPRequestMethod;
+  constructor(method: HTTPRequestMethod, path: string) {
+    super();
+    this.method = method;
     this.path = path;
-    this.queries = queries;
-    this.headers = req.headers;
-    this.cookies = parseCookies(req.headers.cookie);
   }
 
-  public async getText(): Promise<string> {
-    return new Promise((resolve) => {
-      let data = '';
-      this.request.on('data', (chunk) => {
-        data += chunk;
-      }).on('end', () => resolve(data));
-    });
+  public setMethod(method: HTTPRequestMethod): this {
+    this.method = method;
+    return this;
   }
 
-  public async getJSON(): Promise<object> {
-    return JSON.parse(await this.getText());
-  }
-
-  public getRaw(listener: (chunk: unknown) => void): Readable {
-    return this.request.on('data', listener);
+  public setPath(path: string): this {
+    this.path = path;
+    return this;
   }
 
   public hasCookie(name: string): boolean {
@@ -112,29 +88,6 @@ export class HTTPRequest {
   }
 
   /**
-   * Returns true if the header exists.
-   * @param name
-   */
-  public hasHeader(name: string): boolean {
-    return Object.prototype.hasOwnProperty.call(this.headers, name);
-  }
-
-  /**
-   * Returns the header value.
-   * @param name
-   */
-  public getHeader(name: string): string | string[] | undefined {
-    return this.headers[name];
-  }
-
-  /**
-   * Returns an object containing all headers.
-   */
-  public getHeaders(): IncomingHttpHeaders {
-    return { ...this.headers };
-  }
-
-  /**
    * Returns the request method.
    */
   public getMethod(): HTTPRequestMethod {
@@ -146,12 +99,5 @@ export class HTTPRequest {
    */
   public getPath(): string {
     return this.path;
-  }
-
-  /**
-   * Returns the original request.
-   */
-  public getRequest(): IncomingMessage {
-    return this.request;
   }
 }

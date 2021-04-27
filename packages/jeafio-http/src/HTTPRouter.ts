@@ -2,7 +2,7 @@ import { HTTPRequestInterceptor } from './HTTPRequestInterceptor';
 import { HTTPResponseInterceptor } from './HTTPResponseInterceptor';
 import { HTTPRequestHandler } from './HTTPRequestHandler';
 import { HTTPRequestMethod } from './HTTPRequestMethod';
-import { HTTPRequest } from './HTTPRequest';
+import { HTTPIncomingRequest } from './HTTPIncomingRequest';
 import { HTTPSession } from './HTTPSession';
 import { HTTPResponse } from './HTTPResponse';
 import { matchPatch } from './functions/matchPatch';
@@ -105,7 +105,7 @@ export class HTTPRouter {
     return this;
   }
 
-  private async executeRequestInterceptors(requestInterceptors: HTTPRequestInterceptor[], req: HTTPRequest, session: HTTPSession): Promise<HTTPResponse | void> {
+  private async executeRequestInterceptors(requestInterceptors: HTTPRequestInterceptor[], req: HTTPIncomingRequest, session: HTTPSession): Promise<HTTPResponse | void> {
     for (const requestInterceptor of requestInterceptors) {
       const response = await requestInterceptor(req, session);
       if (response) {
@@ -114,7 +114,7 @@ export class HTTPRouter {
     }
   }
 
-  private async executeResponseInterceptors(responseInterceptors: HTTPResponseInterceptor[], req: HTTPRequest, res: HTTPResponse, session: HTTPSession): Promise<HTTPResponse> {
+  private async executeResponseInterceptors(responseInterceptors: HTTPResponseInterceptor[], req: HTTPIncomingRequest, res: HTTPResponse, session: HTTPSession): Promise<HTTPResponse> {
     for (const responseInterceptor of responseInterceptors) {
       const response = await responseInterceptor(req, res, session);
       if (response) {
@@ -124,7 +124,7 @@ export class HTTPRouter {
     return res;
   }
 
-  private async executeRequestHandler(req: HTTPRequest, session: HTTPSession): Promise<HTTPResponse | void> {
+  private async executeRequestHandler(req: HTTPIncomingRequest, session: HTTPSession): Promise<HTTPResponse | void> {
     for (const requestHandler of this.requestHandler) {
       if (requestHandler instanceof HTTPRouter) {
         const routerPath = requestHandler.getPath();
@@ -151,7 +151,7 @@ export class HTTPRouter {
     }
   }
 
-  public async execute(req: HTTPRequest, session: HTTPSession): Promise<HTTPResponse> {
+  public async execute(req: HTTPIncomingRequest, session: HTTPSession): Promise<HTTPResponse> {
     let finalResponse;
     finalResponse = await this.executeRequestInterceptors(this.requestInterceptor, req, session);
 

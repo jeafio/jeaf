@@ -1,6 +1,6 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import { HTTPRouter } from './HTTPRouter';
-import { HTTPRequest } from './HTTPRequest';
+import { HTTPIncomingRequest } from './HTTPIncomingRequest';
 
 export class HTTPServer {
   private readonly server: Server;
@@ -13,16 +13,18 @@ export class HTTPServer {
 
   private async handleRequests(req: IncomingMessage, res: ServerResponse): Promise<void> {
     res.writeHead(404);
-    const request = new HTTPRequest(req);
+    const request = new HTTPIncomingRequest(req);
     const session = {};
     const response = await this.router.execute(request, session);
     const statusCode = response.getStatusCode();
-    const headers = response.getHeaders();
+
     const cookies = response.getCookies();
 
     if (cookies.length > 0) {
-      headers['Set-Cookie'] = cookies.map((cookie) => cookie.toString());
+      response.setHeader('Set-Cookie', cookies.map((cookie) => cookie.toString()))
     }
+
+    const headers = response.getHeaders();
 
     res.writeHead(statusCode, headers);
 

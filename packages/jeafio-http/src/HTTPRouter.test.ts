@@ -1,5 +1,5 @@
 import { HTTPRouter } from './HTTPRouter';
-import { HTTPRequest } from './HTTPRequest';
+import { HTTPIncomingRequest } from './HTTPIncomingRequest';
 import { IncomingMessageFixture } from '../tests/fixtures/IncomingMessageFixture';
 import { HTTPResponse } from './HTTPResponse';
 import { HTTPRequestMethod } from './HTTPRequestMethod';
@@ -7,7 +7,7 @@ import { HTTPRequestMethod } from './HTTPRequestMethod';
 describe('HTTPRouter', () => {
   it('should return an empty 404 response by default', async () => {
     const router = new HTTPRouter('/');
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const response = await router.execute(request, {});
     expect(response.getStatusCode()).toBe(404);
   });
@@ -16,7 +16,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/');
     const interceptor = jest.fn();
     router.addRequestInterceptor(interceptor);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(404);
@@ -28,7 +28,7 @@ describe('HTTPRouter', () => {
     const interceptor = jest.fn();
     const handler = jest.fn().mockResolvedValue(new HTTPResponse(200));
     router.get('/a/b/c', handler, {requestInterceptors: [interceptor]});
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(200);
@@ -42,7 +42,7 @@ describe('HTTPRouter', () => {
     const interceptor = jest.fn().mockResolvedValue(finalResponse);
     const handler = jest.fn();
     router.get('/a/b/c', handler, {requestInterceptors: [interceptor]});
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response).toBe(finalResponse);
@@ -56,7 +56,7 @@ describe('HTTPRouter', () => {
     const interceptorTwo = jest.fn();
     router.addRequestInterceptor(interceptorOne);
     router.addRequestInterceptor(interceptorTwo);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(404);
@@ -69,7 +69,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/');
     const interceptor = jest.fn().mockReturnValue(new HTTPResponse());
     router.addRequestInterceptor(interceptor);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(200);
@@ -80,7 +80,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/');
     const handler = jest.fn().mockReturnValue(new HTTPResponse());
     router.addRequestHandler('GET', '/a/b/c', handler);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(200);
@@ -91,7 +91,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/');
     const handler = jest.fn().mockReturnValue(new HTTPResponse());
     router[requestType]('/a/b/c', handler);
-    const request = new HTTPRequest(IncomingMessageFixture(requestType.toUpperCase() as HTTPRequestMethod));
+    const request = new HTTPIncomingRequest(IncomingMessageFixture(requestType.toUpperCase() as HTTPRequestMethod));
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(200);
@@ -102,7 +102,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/a');
     const handler = jest.fn().mockReturnValue(new HTTPResponse());
     router.addRequestHandler('GET', '/b/c', handler);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(200);
@@ -116,7 +116,7 @@ describe('HTTPRouter', () => {
     const handler = jest.fn().mockReturnValue(mockedResponse);
     subRouter.addRequestHandler('GET', '/b/c', handler);
     router.addRouter(subRouter);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response).toBe(mockedResponse);
@@ -126,7 +126,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/');
     const handler = jest.fn().mockReturnValue(new HTTPResponse());
     router.addRequestHandler('GET', '/a/b/c2', handler);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response.getStatusCode()).toBe(404);
@@ -137,7 +137,7 @@ describe('HTTPRouter', () => {
     const router = new HTTPRouter('/');
     const subRouter = new HTTPRouter('/xyz');
     router.addRouter(subRouter);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     jest.spyOn(subRouter, 'execute');
     await router.execute(request, session);
@@ -152,7 +152,7 @@ describe('HTTPRouter', () => {
     const interceptor = jest.fn().mockReturnValue(finalResponse);
     router.addRequestHandler('GET', '/a/b/c', handler);
     router.addResponseInterceptor(interceptor);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response).toBe(finalResponse);
@@ -170,7 +170,7 @@ describe('HTTPRouter', () => {
     router.addRequestHandler('GET', '/a/b/c', handler);
     router.addResponseInterceptor(interceptor);
     router.addResponseInterceptor(interceptorTwo);
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     const response = await router.execute(request, session);
     expect(response).toBe(finalResponse);
@@ -185,7 +185,7 @@ describe('HTTPRouter', () => {
     const handler = jest.fn().mockReturnValue(mockedResponse);
     const interceptor = jest.fn();
     router.get('/a/b/c', handler, {responseInterceptors: [interceptor]});
-    const request = new HTTPRequest(IncomingMessageFixture());
+    const request = new HTTPIncomingRequest(IncomingMessageFixture());
     const session = {};
     await router.execute(request, session);
     expect(interceptor).toHaveBeenCalledWith(request, mockedResponse, session);

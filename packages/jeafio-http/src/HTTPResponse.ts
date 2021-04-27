@@ -1,36 +1,14 @@
 import { HTTPCookie } from './HTTPCookie';
-import { IncomingHttpHeaders } from 'http';
-import { Readable } from 'stream';
+import { HTTPMessage } from './HTTPMessage';
 
-export class HTTPResponse {
-  private statusCode: number;
-  private headers: Record<string, string> = {};
-  private queries: Record<string, string> = {};
-  private cookies: HTTPCookie[] = [];
-  private body: Readable | undefined;
+export class HTTPResponse extends HTTPMessage {
+  protected statusCode: number;
+  protected queries: Record<string, string> = {};
+  protected cookies: HTTPCookie[] = [];
 
   constructor(statusCode = 200) {
+    super();
     this.statusCode = statusCode;
-  }
-
-  public getBody(): Readable | undefined {
-    return this.body;
-  }
-
-  public setBody(body: Readable): this {
-    this.body = body;
-    return this;
-  }
-
-  public setText(text: string): this {
-    this.body = Readable.from(text);
-    return this;
-  }
-
-  public setJson(object: object): this {
-    this.setHeader('Content-Type', 'application/json');
-    this.setText(JSON.stringify(object));
-    return this;
   }
 
   public setStatusCode(statusCode: number): this {
@@ -98,38 +76,5 @@ export class HTTPResponse {
    */
   public getQueries(): Record<string, string> {
     return { ...this.queries };
-  }
-
-  public deleteHeader(name: string): this {
-    delete this.headers[name];
-    return this;
-  }
-
-  public setHeader(name: string, value: string | number | boolean): this {
-    this.headers[name] = value.toString();
-    return this;
-  }
-
-  /**
-   * Returns true if the header exists.
-   * @param name
-   */
-  public hasHeader(name: string): boolean {
-    return Object.prototype.hasOwnProperty.call(this.headers, name);
-  }
-
-  /**
-   * Returns the header value.
-   * @param name
-   */
-  public getHeader(name: string): string | string[] | undefined {
-    return this.headers[name];
-  }
-
-  /**
-   * Returns an object containing all headers.
-   */
-  public getHeaders(): IncomingHttpHeaders {
-    return { ...this.headers };
   }
 }

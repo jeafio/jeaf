@@ -1,20 +1,21 @@
-import { HTTPRequest } from './HTTPRequest';
+import { HTTPIncomingRequest } from './HTTPIncomingRequest';
 import { IncomingMessageFixture } from '../tests/fixtures/IncomingMessageFixture';
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 
 describe('HTTPRequest', () => {
 
-  let request: HTTPRequest;
+  let request: HTTPIncomingRequest;
   let message: IncomingMessage;
 
   beforeEach(() => {
     message = IncomingMessageFixture();
-    request = new HTTPRequest(message);
+    request = new HTTPIncomingRequest(message);
   });
 
   it('should convert an IncomingMessage to a HTTPRequest', () => {
     expect(request).toEqual({
+      'body': expect.any(Object),
       'headers': {
         'accept': '*/*',
         'accept-encoding': 'gzip, deflate, br',
@@ -119,9 +120,19 @@ describe('HTTPRequest', () => {
 
   it('should return raw body', (done) => {
     const listener = jest.fn();
-    request.getRaw(listener).on('end', () => {
+    (request.getBody() as Readable).on('data', listener).on('end', () => {
       expect(listener).toHaveBeenCalledWith(Buffer.from('{"name": "test"}'));
       done();
     });
+  });
+
+  it('should set method', function() {
+    request.setMethod('POST');
+    expect(request.getMethod()).toBe('POST')
+  });
+
+  it('should set path', function() {
+    request.setPath('/test/1234');
+    expect(request.getPath()).toBe('/test/1234')
   });
 });

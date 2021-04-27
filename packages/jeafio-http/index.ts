@@ -1,6 +1,6 @@
 export * from './src/functions/matchPatch';
 export * from './src/functions/parsePath';
-export * from './src/HTTPRequest';
+export * from './src/HTTPIncomingRequest';
 export * from './src/HTTPRequestMethod';
 export * from './src/HTTPResponse';
 export * from './src/HTTPRequestHandler';
