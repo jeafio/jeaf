@@ -1,2 +1,2 @@
-# @jeafio/logger
+# jeafio/logger
 

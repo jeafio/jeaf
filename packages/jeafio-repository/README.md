@@ -1,1 +1,1 @@
-# @jeafio/repository
+# jeafio/repository

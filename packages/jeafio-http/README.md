@@ -1,1 +1,1 @@
-# @jeafio/http
+# jeafio/http

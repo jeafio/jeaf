@@ -1,1 +1,1 @@
-# @jeafio/dicontainer
+# jeafio/dicontainer

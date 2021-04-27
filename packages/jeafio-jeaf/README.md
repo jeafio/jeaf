@@ -1,2 +1,2 @@
-# @jeafio/jeaf
+# jeafio/jeaf
 

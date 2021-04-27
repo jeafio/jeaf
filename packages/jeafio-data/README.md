@@ -1,1 +1,1 @@
-# @jeafio/data
+# jeafio/data

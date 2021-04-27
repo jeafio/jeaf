@@ -1,4 +1,4 @@
-# @jeafio/connect
+# jeafio/connect
 
 
 [![Coverage Status](https://coveralls.io/repos/github/jeafio/connect/badge.svg?branch=master)](https://coveralls.io/github/jeafio/connect?branch=master)

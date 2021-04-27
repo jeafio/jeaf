@@ -1,2 +1,2 @@
-# @jeafio/cli
+# jeafio/cli
 

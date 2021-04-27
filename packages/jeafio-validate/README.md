@@ -1,1 +1,1 @@
-# @jeafio/validate
+# jeafio/validate
