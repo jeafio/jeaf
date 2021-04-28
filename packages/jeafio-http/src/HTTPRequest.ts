@@ -14,6 +14,24 @@ export class HTTPRequest extends HTTPMessage {
   protected method: HTTPRequestMethod;
 
   /**
+   * The host to connect to
+   * @protected
+   */
+  protected host = 'localhost';
+
+  /**
+   * The port to use
+   * @protected
+   */
+  protected port = 443;
+
+  /**
+   * The protocol to use
+   * @protected
+   */
+  protected protocol = 'https';
+
+  /**
    * The path part of the request url.
    * @private
    */
@@ -42,6 +60,33 @@ export class HTTPRequest extends HTTPMessage {
     this.path = path;
   }
 
+  public setProtocol(protocol: string): this {
+    this.protocol = protocol;
+    return this;
+  }
+
+  public getProtocol(): string {
+    return this.protocol;
+  }
+
+  public setHost(host: string): this {
+    this.host = host;
+    return this;
+  }
+
+  public setPort(port: number): this {
+    this.port = port;
+    return this;
+  }
+
+  public getHost(): string {
+    return this.host;
+  }
+
+  public getPort(): number {
+    return this.port;
+  }
+
   public setMethod(method: HTTPRequestMethod): this {
     this.method = method;
     return this;
@@ -62,6 +107,11 @@ export class HTTPRequest extends HTTPMessage {
 
   public getCookies(): Record<string, string> {
     return { ...this.cookies };
+  }
+
+  public setCookie(name: string, value: string): this {
+    this.cookies[name] = value;
+    return this;
   }
 
   /**
@@ -85,6 +135,11 @@ export class HTTPRequest extends HTTPMessage {
    */
   public getQueries(): Record<string, string> {
     return { ...this.queries };
+  }
+
+  public setQuery(name: string, value: string): this {
+    this.queries[name] = value;
+    return this;
   }
 
   /**

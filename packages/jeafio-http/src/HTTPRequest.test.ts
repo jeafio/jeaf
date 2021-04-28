@@ -135,4 +135,14 @@ describe('HTTPRequest', () => {
     request.setPath('/test/1234');
     expect(request.getPath()).toBe('/test/1234')
   });
+
+  it('should set cookie', function() {
+    request.setCookie('a', '1234');
+    expect(request.getCookie('a')).toBe('1234');
+  });
+
+  it('should set query', function() {
+    request.setQuery('a', '1234');
+    expect(request.getQuery('a')).toBe('1234');
+  });
 });

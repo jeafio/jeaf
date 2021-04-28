@@ -1,47 +1,38 @@
-import { HTTPCookie, HTTPRequestMethod, HTTPResponse } from '@jeafio/http';
-import { Readable } from 'stream';
+import { HTTPResponse } from '@jeafio/http';
+import { ConnectRequest } from './ConnectRequest';
+import { makeRequest } from './functions/makeRequest';
 
-export class Connect {
-  private headers: Record<string, string> = {};
-  private queries: Record<string, string> = {};
-  private cookies: HTTPCookie[] = [];
-  private method: HTTPRequestMethod;
-  private uri: string;
-
-  constructor(method: HTTPRequestMethod, uri: string) {
-    this.method = method;
-    this.uri = uri;
-  }
+export class Connect extends ConnectRequest {
 
   public static get(uri: string): Connect {
-    return new Connect('GET', uri);
+    return new this('GET', uri);
   }
 
-  public async send(body: Readable): Promise<HTTPResponse> {
-    return new HTTPResponse();
+  public static post(uri: string): ConnectRequest {
+    return new this('POST', uri);
   }
 
-  public sendText(text: string): Promise<HTTPResponse> {
-    return this.send(Readable.from(text));
+  public static put(uri: string): ConnectRequest {
+    return new this('PUT', uri);
   }
 
-  public setJson(object: object): Promise<HTTPResponse> {
-    this.setHeader('Content-Type', 'application/json');
-    return this.sendText(JSON.stringify(object));
+  public static patch(uri: string): ConnectRequest {
+    return new this('PATCH', uri);
   }
 
-  public addCookie(cookie: HTTPCookie): this {
-    this.cookies.push(cookie);
-    return this;
+  public static delete(uri: string): ConnectRequest {
+    return new this('DELETE', uri);
   }
 
-  public setQuery(name: string, value: string | number | boolean): this {
-    this.queries[name] = value.toString();
-    return this;
+  public static trace(uri: string): ConnectRequest {
+    return new this('TRACE', uri);
   }
 
-  public setHeader(name: string, value: string | number | boolean): this {
-    this.headers[name] = value.toString();
-    return this;
+  public static options(uri: string): ConnectRequest {
+    return new this('OPTIONS', uri);
+  }
+
+  public async send(): Promise<HTTPResponse> {
+    return makeRequest(this);
   }
 }
