@@ -1,6 +1,7 @@
 import { HTTPResponse } from '@jeafio/http';
 import { ConnectRequest } from './ConnectRequest';
 import { makeRequest } from './functions/makeRequest';
+import { HTTPIncomingResponse } from '@jeafio/http/src/HTTPIncomingResponse';
 
 export class Connect extends ConnectRequest {
 
@@ -32,7 +33,7 @@ export class Connect extends ConnectRequest {
     return new this('OPTIONS', uri);
   }
 
-  public async send(): Promise<HTTPResponse> {
+  public async send(): Promise<HTTPIncomingResponse> {
     return makeRequest(this);
   }
 }

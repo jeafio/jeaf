@@ -9,7 +9,7 @@ describe('HTTPCookie', () => {
     expect(new HTTPCookie('a', '1234', {
       path: '/a/b',
       maxAge: 1000,
-      httpOnly: true
+      httpOnly: true,
     }).toString()).toBe('a=1234; path=/a/b;Max-Age=1000;HttpOnly');
   });
 
@@ -45,5 +45,24 @@ describe('HTTPCookie', () => {
 
   it('should add expires', () => {
     expect(new HTTPCookie('a', '1234', { expires: new Date(0) }).toString()).toBe('a=1234; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+  });
+
+  it('should convert string to cookie', function() {
+    const cookie = new HTTPCookie('test', '1234', {
+      path: '/',
+      maxAge: 10000,
+      httpOnly: true,
+      expires: new Date(0),
+    });
+    expect(HTTPCookie.fromString(cookie.toString())).toEqual({
+      'config': {
+        'expires': 0,
+        'httpOnly': true,
+        'maxAge': 10000,
+        'path': '/',
+      },
+      'name': 'test',
+      'value': '1234',
+    });
   });
 });

@@ -16,6 +16,9 @@ describe('HTTPRequest', () => {
   it('should convert an IncomingMessage to a HTTPRequest', () => {
     expect(request).toEqual({
       'body': expect.any(Object),
+      'host': 'localhost',
+      'port': 443,
+      'protocol': 'https',
       'headers': {
         'accept': '*/*',
         'accept-encoding': 'gzip, deflate, br',

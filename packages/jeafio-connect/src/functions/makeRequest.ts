@@ -1,9 +1,9 @@
-import { HTTPResponse } from '@jeafio/http';
 import { Connect } from '../Connect';
 import { buildPath } from './buildPath';
 import http from 'http';
+import { HTTPIncomingResponse } from '@jeafio/http/src/HTTPIncomingResponse';
 
-export async function makeRequest(request: Connect): Promise<HTTPResponse> {
+export async function makeRequest(request: Connect): Promise<HTTPIncomingResponse> {
   const path = buildPath(request.getPath(), request.getParams(), request.getQueries());
   const headers = request.getHeaders();
   const cookies = request.getCookies();
@@ -20,7 +20,7 @@ export async function makeRequest(request: Connect): Promise<HTTPResponse> {
       method: request.getMethod(),
       headers: request.getHeaders(),
     }, (response) => {
-      resolve(new HTTPResponse());
+      resolve(new HTTPIncomingResponse(response));
     });
   });
 }

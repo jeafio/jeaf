@@ -40,6 +40,41 @@ export class HTTPCookie {
     }[option];
   }
 
+  private mapStringOption(option: string): string {
+    return {
+      Secure: 'secure',
+      Expires: 'expires',
+      'Max-Age': 'maxAge',
+      path: 'path',
+      Domain: 'domain',
+      SameSite: 'sameSite',
+      HttpOnly: 'httpOnly',
+    }[option] as string;
+  }
+
+  public static fromString(cookieString: string): HTTPCookie {
+    const parts = cookieString.split(';');
+    const cookieValue = (parts.shift() as string).split('=');
+    const name = cookieValue[0];
+    const value = cookieValue[1];
+    const config: Record<string, string | boolean | number | Date> = {};
+    const cookie = new HTTPCookie(name, value, config);
+    for (const part of parts) {
+      const split = part.trim().split('=');
+      const mappedName = cookie.mapStringOption(split[0]);
+      if (mappedName) {
+        if (mappedName === 'expires') {
+          config[mappedName] = Date.parse(split[1]);
+        } else if (mappedName  === 'maxAge') {
+          config[mappedName] = Number.parseInt(split[1]);
+        } else {
+          config[mappedName] = split[1] || true;
+        }
+      }
+    }
+    return cookie;
+  }
+
   public toString(): string {
     const configOptions = Object.keys(this.config)
       .map((option: string) => {
