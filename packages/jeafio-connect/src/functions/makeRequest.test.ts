@@ -25,4 +25,19 @@ describe('makeRequest', function() {
       protocol: 'https',
     }, expect.any(Function));
   });
+
+  it('should attach cookie header if some exist', function() {
+    const connect = new Connect('GET', '/a/b/c').setCookie('a', 'b');
+    const response = makeRequest(connect);
+    expect(http.request).toHaveBeenCalledWith({
+      headers: {
+        'Cookies': 'a=b'
+      },
+      method: 'GET',
+      host: 'localhost',
+      port: 443,
+      path: '/a/b/c',
+      protocol: 'https',
+    }, expect.any(Function));
+  });
 });

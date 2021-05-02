@@ -2,13 +2,13 @@ import { Connect } from '../Connect';
 import { buildPath } from './buildPath';
 import http from 'http';
 import { HTTPIncomingResponse } from '@jeafio/http/src/HTTPIncomingResponse';
+import { HTTPResponse } from '@jeafio/http';
 
-export async function makeRequest(request: Connect): Promise<HTTPIncomingResponse> {
+export async function makeRequest(request: Connect): Promise<HTTPResponse> {
   const path = buildPath(request.getPath(), request.getParams(), request.getQueries());
-  const headers = request.getHeaders();
   const cookies = request.getCookies();
   if (Object.keys(cookies).length > 0) {
-    headers['Cookies'] = Object.keys(cookies).map((key) => `${key}=${cookies[key]}`);
+    request.setHeader('Cookies', Object.keys(cookies).map((key) => `${key}=${cookies[key]}`).join(';'));
   }
 
   return new Promise((resolve) => {

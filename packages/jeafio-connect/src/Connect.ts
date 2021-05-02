@@ -1,7 +1,6 @@
-import { HTTPResponse } from '@jeafio/http';
 import { ConnectRequest } from './ConnectRequest';
 import { makeRequest } from './functions/makeRequest';
-import { HTTPIncomingResponse } from '@jeafio/http/src/HTTPIncomingResponse';
+import { HTTPResponse } from '@jeafio/http';
 
 export class Connect extends ConnectRequest {
 
@@ -9,31 +8,51 @@ export class Connect extends ConnectRequest {
     return new this('GET', uri);
   }
 
-  public static post(uri: string): ConnectRequest {
+  public static post(uri: string): Connect {
     return new this('POST', uri);
   }
 
-  public static put(uri: string): ConnectRequest {
+  public static put(uri: string): Connect {
     return new this('PUT', uri);
   }
 
-  public static patch(uri: string): ConnectRequest {
+  public static patch(uri: string): Connect {
     return new this('PATCH', uri);
   }
 
-  public static delete(uri: string): ConnectRequest {
+  public static delete(uri: string): Connect {
     return new this('DELETE', uri);
   }
 
-  public static trace(uri: string): ConnectRequest {
+  public static trace(uri: string): Connect {
     return new this('TRACE', uri);
   }
 
-  public static options(uri: string): ConnectRequest {
+  public static options(uri: string): Connect {
     return new this('OPTIONS', uri);
   }
 
-  public async send(): Promise<HTTPIncomingResponse> {
-    return makeRequest(this);
+  public async send(): Promise<HTTPResponse> {
+    let response;
+
+    for (const interceptor of this.requestInterceptors) {
+      response = await interceptor(this);
+      if (response) {
+        break;
+      }
+    }
+
+    if (!response) {
+      response = await makeRequest(this);
+    }
+
+    for (const interceptor of this.responseInterceptors) {
+      const earlyResponse = await interceptor(this, response);
+      if (earlyResponse) {
+        return earlyResponse;
+      }
+    }
+
+    return response;
   }
 }
