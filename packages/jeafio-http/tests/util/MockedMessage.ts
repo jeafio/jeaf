@@ -5,7 +5,8 @@ export class MockedMessage extends Readable {
   public declare body: Buffer;
   public declare url: string;
   public declare method: HTTPRequestMethod;
-  public declare headers: Record<string, string>;
+  public declare headers: Record<string, string | string[]>;
+  public declare statusCode: number;
 
   private sent = false;
 

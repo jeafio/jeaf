@@ -7,6 +7,7 @@ export const IncomingMessageFixture: (method?: HTTPRequestMethod) => IncomingMes
   message.url = '/a/b/c?a=1&b=2';
   message.method = method;
   message.body = Buffer.from('{"name": "test"}')
+  message.statusCode = 200;
   message.headers = {
     'user-agent': 'PostmanRuntime/7.26.10',
     'accept': '*/*',
@@ -15,6 +16,7 @@ export const IncomingMessageFixture: (method?: HTTPRequestMethod) => IncomingMes
     'accept-encoding': 'gzip, deflate, br',
     'connection': 'keep-alive',
     'cookie': 'a=b;c=d',
+    'set-cookie': ['a=b', 'c=d']
   }
   return message as unknown as IncomingMessage;
 };

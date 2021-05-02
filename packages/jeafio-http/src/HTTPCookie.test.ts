@@ -65,4 +65,10 @@ describe('HTTPCookie', () => {
       'value': '1234',
     });
   });
+
+  it('should throw an error if field is not known', function() {
+    expect(() => {
+      HTTPCookie.fromString('a=b;test=1234');
+    }).toThrowError(`Invalid key 'test' found in cookie definition`);
+  });
 });

@@ -13,6 +13,33 @@ describe('HTTPRequest', () => {
     request = new HTTPIncomingRequest(message);
   });
 
+  it('should have https as default protocol', function() {
+    expect(request.getProtocol()).toBe('https');
+  });
+
+  it('should set protocol', function() {
+    request.setProtocol('http');
+    expect(request.getProtocol()).toBe('http');
+  });
+
+  it('should have localhost as default host', function() {
+    expect(request.getHost()).toBe('localhost');
+  });
+
+  it('should set host', function() {
+    request.setHost('127.0.0.1')
+    expect(request.getHost()).toBe('127.0.0.1');
+  });
+
+  it('should have 443 as default port', function() {
+    expect(request.getPort()).toBe(443);
+  });
+
+  it('should set port', function() {
+    request.setPort(80)
+    expect(request.getPort()).toBe(80);
+  });
+
   it('should convert an IncomingMessage to a HTTPRequest', () => {
     expect(request).toEqual({
       'body': expect.any(Object),
@@ -27,6 +54,7 @@ describe('HTTPRequest', () => {
         'postman-token': '2f435d9e-d1c8-47c8-a1de-45b05bb5b81e',
         'user-agent': 'PostmanRuntime/7.26.10',
         'cookie': 'a=b;c=d',
+        'set-cookie': ['a=b', 'c=d']
       },
       'method': 'GET',
       'path': '/a/b/c',
@@ -79,6 +107,7 @@ describe('HTTPRequest', () => {
       'postman-token': '2f435d9e-d1c8-47c8-a1de-45b05bb5b81e',
       'user-agent': 'PostmanRuntime/7.26.10',
       'cookie': 'a=b;c=d',
+      'set-cookie': ['a=b', 'c=d']
     });
   });
 

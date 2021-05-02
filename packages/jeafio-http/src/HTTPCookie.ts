@@ -1,3 +1,4 @@
+import assert from 'assert';
 
 export interface HttpCookieConfig {
   secure?: true;
@@ -62,14 +63,13 @@ export class HTTPCookie {
     for (const part of parts) {
       const split = part.trim().split('=');
       const mappedName = cookie.mapStringOption(split[0]);
-      if (mappedName) {
-        if (mappedName === 'expires') {
-          config[mappedName] = Date.parse(split[1]);
-        } else if (mappedName  === 'maxAge') {
-          config[mappedName] = Number.parseInt(split[1]);
-        } else {
-          config[mappedName] = split[1] || true;
-        }
+      assert(mappedName, `Invalid key '${split[0]}' found in cookie definition`);
+      if (mappedName === 'expires') {
+        config[mappedName] = Date.parse(split[1]);
+      } else if (mappedName  === 'maxAge') {
+        config[mappedName] = Number.parseInt(split[1]);
+      } else {
+        config[mappedName] = split[1] || true;
       }
     }
     return cookie;

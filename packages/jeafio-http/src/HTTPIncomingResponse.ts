@@ -1,5 +1,4 @@
 import { IncomingMessage } from 'http';
-import { parseCookies } from './functions/parseCookies';
 import { HTTPResponse } from './HTTPResponse';
 import { HTTPCookie } from './HTTPCookie';
 
@@ -23,14 +22,20 @@ export class HTTPIncomingResponse extends HTTPResponse {
     super(req.statusCode);
     this.request = req;
     this.headers = req.headers as Record<string, string>;
-    this.cookies = req.headers['set-cookie']?.map(HTTPCookie.fromString) || [];
+    this.cookies = this.parseCookies();
     this.setBody(req);
+  }
+
+  private parseCookies(): HTTPCookie[] {
+    const setCookie = this.getHeader('set-cookie') as string[] | undefined;
+    if (!setCookie) return [];
+    return setCookie.map(HTTPCookie.fromString);
   }
 
   /**
    * Returns the original request.
    */
-  public getRequest(): IncomingMessage {
+  public getResponse(): IncomingMessage {
     return this.request;
   }
 }
