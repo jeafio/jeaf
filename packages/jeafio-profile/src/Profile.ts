@@ -1,81 +1,23 @@
-import fs from 'fs';
-import path from 'path';
-import { strict as assert } from 'assert';
-import { parse } from 'yaml';
-import { Component } from '@jeafio/dicontainer';
-import { hasOwnProperty } from '@jeafio/data';
+import 'reflect-metadata';
+import { transformName } from './functions/transformName';
+import { Constructor, hasOwnProperty } from '@jeafio/data';
+import { validate } from '@jeafio/validate';
+import assert from 'assert';
+import { Transformer } from '@jeafio/transformer';
 
-type Primitives = string | boolean | number;
-
-@Component()
 export class Profile {
-  private values: Record<string, Primitives> = {};
-
-  constructor(profilePath: string, profiles: string[]) {
-    this.loadProfile(profilePath, profiles);
-  }
-
-  /**
-   * Loads all profiles
-   * @param profileDirPath
-   * @param profiles
-   * @private
-   */
-  private loadProfile(profileDirPath: string, profiles: string[]) {
-    assert.ok(fs.existsSync(profileDirPath), `Could not find profile directory`);
-    const existingProfiles = fs.readdirSync(profileDirPath).filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'));
-    assert.ok(
-      existingProfiles.includes('application.yaml') || existingProfiles.includes('application.yml'),
-      'Could not find default profile',
-    );
-    const profileChain = ['application', ...profiles];
-    for (const profile of profileChain) {
-      const profileContent = this.readProfileSync(profile, profileDirPath, existingProfiles);
-      this.values = {
-        ...this.values,
-        ...profileContent,
-      };
-    }
-    const env = this.getEnvironmentConfig();
-    this.values = {
-      ...this.values,
-      ...env,
-    };
-  }
-
-  /**
-   * Returns a normalized list of env variables.
-   * @private
-   */
-  private getEnvironmentConfig(): Record<string, Primitives> {
-    return Object.keys(process.env).reduce((env: any, key) => {
-      const transformedKey = key.replace(/_/g, '.').toLowerCase();
-      env[transformedKey] = process.env[key];
-      return env;
-    }, {});
-  }
-
-  /**
-   * Tries to parse the given profile.
-   * @param profile
-   * @param profileDirPath
-   * @param existingProfiles
-   * @private
-   */
-  private readProfileSync(profile: string, profileDirPath: string, existingProfiles: string[]): any {
-    const fileName = profile === 'application' ? 'application' : `application.${profile}`;
-    const profilePath = existingProfiles.find((p) => p === `${fileName}.yml` || p === `${fileName}.yaml`);
-    assert.ok(profilePath, `Could not find profile '${profile}'`);
-    const profileContent = fs.readFileSync(path.resolve(profileDirPath, profilePath), 'utf8');
-    return parse(profileContent);
-  }
-
-  /**
-   * Returns the value of a config value.
-   * @param name
-   */
-  public get(name: string): any {
-    assert.ok(hasOwnProperty(this.values, name), `Could not find profile config '${name}'`);
-    return this.values[name];
+  public static load<T extends object>(profile: Constructor<T>, processEnv: Record<string, string | undefined> = process.env): T {
+    const schema = Reflect.getMetadata('validate:schema', profile);
+    const profileDto: Record<string, string | undefined> = {};
+    Object.keys(processEnv).forEach((key) => {
+      const transformedKey = transformName(key);
+      if (hasOwnProperty(schema, transformedKey)) {
+        profileDto[transformedKey] = processEnv[key];
+      }
+    });
+    const valid = validate(profileDto, profile);
+    assert(valid.isValid, `Could not load profile as following environment variables are incorrect \n ${valid.errors.map((e) => `\t- ${e.message}\n`)}`);
+    const transformer = new Transformer();
+    return transformer.transform(profileDto, profile) as T;
   }
 }

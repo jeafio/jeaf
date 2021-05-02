@@ -1,75 +1,30 @@
+import { Field } from '@jeafio/validate';
 import { Profile } from './Profile';
-import fs from 'fs';
 
-describe('Profile', () => {
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
+class Config {
+  @Field(String)
+  public declare mongoHost: string;
+}
 
-  it('should throw an error if the given profile path does not exist', () => {
-    jest.spyOn(fs, 'existsSync').mockReturnValue(false);
-    expect(() => {
-      new Profile('../test', []);
-    }).toThrowError('Could not find profile directory');
-  });
+describe('Profile', function() {
 
-  it('should throw an error if application.yaml is missing', () => {
-    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-    jest.spyOn(fs, 'readdirSync').mockReturnValue([]);
-    expect(() => {
-      new Profile('../test', []);
-    }).toThrowError('Could not find default profile');
-  });
-
-  it('should throw an error if profile yaml is missing', () => {
-    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-    jest.spyOn(fs, 'readdirSync').mockReturnValue(['application.yaml'] as any);
-    jest.spyOn(fs, 'readFileSync').mockReturnValue('{}');
-    expect(() => {
-      new Profile('../test', ['local']);
-    }).toThrowError("Could not find profile 'local'");
-  });
-
-  it('should convert environment variable names', () => {
-    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-    jest.spyOn(fs, 'readdirSync').mockReturnValue(['application.yaml'] as any);
-    jest.spyOn(fs, 'readFileSync').mockReturnValue('{}');
-    const env = process.env;
-    process.env = {
-      this_is_a_test: '',
-      thisIsAnotherTest: '',
-    };
-    const profile = new Profile('../test', []);
-    expect((profile as any).values).toEqual({
-      'this.is.a.test': '',
-      thisisanothertest: '',
+  it('should build config object', function() {
+    const config = Profile.load(Config, { MONGO_HOST: 'localhost' });
+    expect(config).toEqual({
+      mongoHost: 'localhost',
     });
-    process.env = env;
   });
 
-  it('should merge variable names with application', () => {
-    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-    jest.spyOn(fs, 'readdirSync').mockReturnValue(['application.yaml'] as any);
-    jest.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({ 'server.name': 'test' }));
-    const env = process.env;
-    process.env = {
-      this_is_a_test: '',
-      thisIsAnotherTest: '',
-    };
-    const profile = new Profile('../test', []);
-    expect((profile as any).values).toEqual({
-      'this.is.a.test': '',
-      thisisanothertest: '',
-      'server.name': 'test',
+  it('should use global env as default', function() {
+    process.env.MONGO_HOST = 'localhost';
+    const config = Profile.load(Config);
+    expect(config).toEqual({
+      mongoHost: 'localhost',
     });
-    process.env = env;
   });
 
-  it('should return correct profile value', () => {
-    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-    jest.spyOn(fs, 'readdirSync').mockReturnValue(['application.yaml'] as any);
-    jest.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({ 'server.name': 'test' }));
-    const profile = new Profile('../test', []);
-    expect(profile.get('server.name')).toBe('test');
+  it('should throw an error if validation fails', function() {
+    expect(() => Profile.load(Config, {})).toThrowError();
   });
+
 });
